@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تڕانسلەیتەری ZAKARIA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4e50;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --text: #333;
+            --shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark), #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            position: relative;
+            display: inline-block;
+            transform-style: preserve-3d;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            bottom: -15px;
+            left: 0;
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0.7;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+
+        .translator-container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .translator-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .input-output-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .input-group, .output-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .language-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .language-label {
+            font-size: 0.9rem;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .swap-button {
+            background: var(--accent);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .swap-button:hover {
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--light);
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.3);
+        }
+
+        .output-text {
+            min-height: 150px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+            position: relative;
+            overflow: auto;
+        }
+
+        .translate-button {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .translate-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .translate-button:hover::before {
+            left: 100%;
+        }
+
+        .translate-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.6);
+        }
+
+        .translate-button:active {
+            transform: translateY(1px);
+        }
+
+        .icon-3d {
+            font-size: 1.5rem;
+            transform-style: preserve-3d;
+            animation: rotate 10s linear infinite;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transform: translateZ(10px);
+        }
+
+        .feature:hover {
+            transform: translateY(-5px) translateZ(15px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+            display: inline-block;
+            transform-style: preserve-3d;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateY(0); }
+            50% { transform: translateY(-10px) rotateY(10deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotateY(0); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        /* 3D Effect for the whole container */
+        .translator-container {
+            animation: container-float 6s ease-in-out infinite;
+        }
+
+        @keyframes container-float {
+            0%, 100% { transform: rotateX(0) rotateY(0); }
+            25% { transform: rotateX(1deg) rotateY(1deg); }
+            50% { transform: rotateX(0) rotateY(2deg); }
+            75% { transform: rotateX(-1deg) rotateY(1deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .translator-container {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="logo">ZAKARIA</h1>
+        <p class="subtitle">تڕانسلەیتەری 3D ناوازە بۆ وەرگێڕانی نێوان کوردی، عەرەبی و ئینگلیزی</p>
+    </div>
+
+    <div class="translator-container">
+        <div class="input-output-container">
+            <div class="input-group">
+                <div class="language-selector">
+                    <div class="language-label">
+                        <span class="language-icon">EN</span>
+                        ئینگلیزی
+                    </div>
+                    <button class="swap-button" id="swapBtn">⇄</button>
+                    <div class="language-label">
+                        <span class="language-icon">KU</span>
+                        کوردی
+                    </div>
+                </div>
+                <textarea id="inputText" placeholder="وشە یان ڕستەکەت لێرە بنووسە..."></textarea>
+            </div>
+
+            <div class="output-group">
+                <div class="language-label">
+                    <span class="language-icon">KU</span>
+                    وەرگێڕان بۆ کوردی
+                </div>
+                <div class="output-text" id="outputText">وەرگێڕان لێرە دەردەکەوێت...</div>
+            </div>
+        </div>
+
+        <button class="translate-button" id="translateBtn">
+            <span class="icon-3d">⟳</span>
+            وەریبگێڕە
+        </button>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <h3 class="feature-title">سێ زمان</h3>
+                <p class="feature-desc">وەرگێڕان نێوان کوردی، عەرەبی و ئینگلیزی</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">خێرا و ورد</h3>
+                <p class="feature-desc">وەرگێڕانێکی خێرا و ورد بە دەستەواژەی ناوازە</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🎨</div>
+                <h3 class="feature-title">دیزاینی 3D</h3>
+                <p class="feature-desc">دیزاینێکی سێ ڕەهەندی و ناوازە</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>تڕانسلەیتەری ZAKARIA - دروستکراوە بە HTML, CSS & JavaScript</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            const outputText = document.getElementById('outputText');
+            const translateBtn = document.getElementById('translateBtn');
+            const swapBtn = document.getElementById('swapBtn');
+            
+            let sourceLang = 'en';
+            let targetLang = 'ku';
+            
+            // نموونەی وشەکان بۆ وەرگێڕان
+            const dictionary = {
+                'hello': 'سڵاو',
+                'world': 'جیهان',
+                'thank you': 'سوپاس',
+                'good morning': 'بەیانی باش',
+                'good night': 'شەو باش',
+                'how are you': 'چۆنی',
+                'welcome': 'بەخێربێی',
+                'peace': 'ئاشتی',
+                'love': 'خۆشەویستی',
+                'friend': 'هاوڕێ',
+                'book': 'کتێب',
+                'computer': 'کۆمپیوتەر',
+                'water': 'ئاو',
+                'food': 'خواردن',
+                'house': 'ماڵ',
+                'car': 'ئوتومبیل',
+                'school': 'قوتابخانە',
+                'teacher': 'مامۆستا',
+                'student': 'خوێندکار',
+                'city': 'شار',
+                'country': 'وڵات',
+                'language': 'زمان',
+                'music': 'مۆسیقا',
+                'sun': 'خۆر',
+                'moon': 'مانگ',
+                'star': 'ئەستێرە',
+                'time': 'کات',
+                'day': 'ڕۆژ',
+                'night': 'شەو',
+                'year': 'ساڵ',
+                'man': 'پیاو',
+                'woman': 'ئافرەت',
+                'child': 'منداڵ',
+                'family': 'خێزان',
+                'work': 'کار',
+                'money': 'پارە',
+                'health': 'تەندروستی',
+                'happy': 'دڵخۆش',
+                'sad': 'دڵگیر',
+                'beautiful': 'جوان',
+                'big': 'گەورە',
+                'small': 'بچووک',
+                'hot': 'گەرم',
+                'cold': 'سارد',
+                'new': 'نوێ',
+                'old': 'کۆن',
+                'good': 'باش',
+                'bad': 'خراپ',
+                'fast': 'خێرا',
+                'slow': 'هێواش',
+                'right': 'ڕاست',
+                'left': 'چەپ',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'before': 'پێش',
+                'after': 'پاش',
+                'now': 'ئێستا',
+                'later': 'دواتر',
+                'always': 'هەمیشە',
+                'never': 'هەرگیز',
+                'sometimes': 'هەندێک جار',
+                'often': 'زۆر جار',
+                'seldom': 'بە دەگمەن',
+                'usually': 'بەزۆری',
+                'quickly': 'بەخێرایی',
+                'slowly': 'بهێواشی',
+                'well': 'باش',
+                'badly': 'خراپ',
+                'easily': 'بەئاسانی',
+                'hard': 'قورس',
+                'together': 'پێکەوە',
+                'alone': 'بەتەنیا',
+                'here': 'لێرە',
+                'there': 'لەوێ',
+                'everywhere': 'هەموو شوێنێک',
+                'nowhere': 'هیچ شوێنێک',
+                'someone': 'کەسێک',
+                'everyone': 'هەموو کەسێک',
+                'no one': 'هیچ کەس',
+                'something': 'شتێک',
+                'everything': 'هەموو شتێک',
+                'nothing': 'هیچ شتێک',
+                'again': 'دووبارە',
+                'also': 'هەروەها',
+                'very': 'زۆر',
+                'too': 'زۆر',
+                'so': 'زۆر',
+                'enough': 'بەس',
+                'almost': 'بەنزیکەیی',
+                'enough': 'بەپێی',
+                'even': 'تەنانەت',
+                'only': 'تەنیا',
+                'just': 'تەنیا',
+                'really': 'بەڕاستی',
+                'probably': 'بەدەگمەن',
+                'perhaps': 'ڕەنگە',
+                'maybe': 'ڕەنگە',
+                'definitely': 'بەدڵنیایی',
+                'certainly': 'بەدڵنیایی',
+                'absolutely': 'بەتەواوی',
+                'completely': 'بەتەواوی',
+                'totally': 'بەتەواوی',
+                'entirely': 'بەتەواوی',
+                'partly': 'بەشێکی',
+                'mostly': 'زۆربەی',
+                'mainly': 'بەزۆری',
+                'generally': 'بەگشتی',
+                'usually': 'بەزۆری',
+                'normally': 'بەشێوەیەکی ئاسایی',
+                'often': 'زۆر جار',
+                'frequently': 'بەزۆری',
+                'sometimes': 'هەندێک جار',
+                'occasionally': 'جار جار',
+                'rarely': 'بە دەگمەن',
+                'seldom': 'بە دەگمەن',
+                'hardly': 'بە دەگمەن',
+                'scarcely': 'بە دەگمەن',
+                'never': 'هەرگیز',
+                'always': 'هەمیشە',
+                'forever': 'بۆ هەمیشە',
+                'constantly': 'بەردەوام',
+                'continuously': 'بەبەردەوامی',
+                'continually': 'بەردەوام',
+                'regularly': 'بەشێوەیەکی ڕێکوپێک',
+                'periodically': 'بەشێوەیەکی خولەکی',
+                'occasionally': 'جار جار',
+                'infrequently': 'بە دەگمەن',
+                'sporadically': 'بەشێوەیەکی کەم',
+                'intermittently': 'بەشێوەیەکی ناڕێک',
+                'randomly': 'بەشێوەیەکی هەڕەمەکی',
+                'arbitrarily': 'بەشێوەیەکی هەڕەمەکی',
+                'purposely': 'بە ئەنقەست',
+                'intentionally': 'بە ئەنقەست',
+                'deliberately': 'بە ئەنقەست',
+                'accidentally': 'بەڕێکەوت',
+                'unintentionally': 'بەبێ مەبەست',
+                'inadvertently': 'بەبێ زانی',
+                'knowingly': 'بە زانینی',
+                'willingly': 'بە ویستی خۆی',
+                'voluntarily': 'بە ویستی خۆی',
+                'reluctantly': 'بەبێ ویستی',
+                'unwillingly': 'بەبێ ویستی',
+                'grudgingly': 'بە ناچاوی',
+                'happily': 'بە دڵخۆشی',
+                'gladly': 'بە دڵخۆشی',
+                'joyfully': 'بە شادی',
+                'cheerfully': 'بە خۆشی',
+                'sadly': 'بە داخی',
+                'unhappily': 'بە ناڕەحەتی',
+                'miserably': 'بە پەژارە',
+                'angrily': 'بە توڕەیی',
+                'furiously': 'بە توڕەیی',
+                'calmly': 'بە ئارامی',
+                'quietly': 'بە بێدەنگی',
+                'silently': 'بە بێدەنگی',
+                'loudly': 'بە بەرز',
+                'noisily': 'بە دەنگی بەرز',
+                'softly': 'بە نەرمی',
+                'gently': 'بە نەرمی',
+                'roughly': 'بە ڕەقی',
+                'violently': 'بە توندی',
+                'forcefully': 'بە توندی',
+                'strongly': 'بە بەهێزی',
+                'weakly': 'بە لاوازی',
+                'easily': 'بە ئاسانی',
+                'readily': 'بە ئاسانی',
+                'quickly': 'بەخێرایی',
+                'swiftly': 'بەخێرایی',
+                'rapidly': 'بەخێرایی',
+                'slowly': 'بهێواشی',
+                'gradually': 'بەرەبەرە',
+                'steadily': 'بەرەبەرە',
+                'suddenly': 'لەناکاو',
+                'abruptly': 'لەناکاو',
+                'immediately': 'یەکسەر',
+                'instantly': 'یەکسەر',
+                'promptly': 'بەپەلە',
+                'soon': 'بەم زووانە',
+                'early': 'زوو',
+                'late': 'درەنگ',
+                'recently': 'بەم دواییە',
+                'lately': 'بەم دواییە',
+                'currently': 'لە ئێستادا',
+                'presently': 'لە ئێستادا',
+                'formerly': 'پێشتر',
+                'previously': 'پێشتر',
+                'originally': 'سەرەتا',
+                'initially': 'سەرەتا',
+                'finally': 'لە کۆتاییدا',
+                'eventually': 'لە کۆتاییدا',
+                'ultimately': 'لە کۆتاییدا',
+                'meanwhile': 'لە هەمان کاتدا',
+                'simultaneously': 'لە هەمان کاتدا',
+                'concurrently': 'لە هەمان کاتدا',
+                'afterwards': 'دوای ئەوە',
+                'later': 'دواتر',
+                'subsequently': 'دواتر',
+                'then': 'ئینجا',
+                'next': 'دوایی',
+                'first': 'یەکەم',
+                'second': 'دووەم',
+                'third': 'سێیەم',
+                'last': 'کۆتا',
+                'finally': 'لە کۆتاییدا',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on': 'لەسەر',
+                'off': 'لەسەر نا',
+                'in': 'ناو',
+                'out': 'دەر',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'without': 'بەبێ',
+                'with': 'لەگەڵ',
+                'without': 'بەبێ',
+                'about': 'دەربارەی',
+                'around': 'دەوروبەری',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'beside': 'لای',
+                'beyond': 'ئەویتر',
+                'through': 'بەناو',
+                'throughout': 'بەدرێژایی',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزیک',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opposite': 'بەرامبەر',
+                'in front of': 'لەبەردەم',
+                'behind': 'لەدوای',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on top of': 'لەسەری',
+                'at the bottom of': 'لەخوارەوەی',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'beyond': 'ئەویتر',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'through': 'بەناو',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'around': 'دەوروبەری',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزیک',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opposite': 'بەرامبەر',
+                'in front of': 'لەبەردەم',
+                'behind': 'لەدوای',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on top of': 'لەسەری',
+                'at the bottom of': 'لەخوارەوەی',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'beyond': 'ئەویتر',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'through': 'بەناو',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'around': 'دەوروبەری',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزیک',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opposite': 'بەرامبەر',
+                'in front of': 'لەبەردەم',
+                'behind': 'لەدوای',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on top of': 'لەسەری',
+                'at the bottom of': 'لەخوارەوەی',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'beyond': 'ئەویتر',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'through': 'بەناو',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'around': 'دەوروبەری',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزیک',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opposite': 'بەرامبەر',
+                'in front of': 'لەبەردەم',
+                'behind': 'لەدوای',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on top of': 'لەسەری',
+                'at the bottom of': 'لەخوارەوەی',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'beyond': 'ئەویتر',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'through': 'بەناو',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'around': 'دەوروبەری',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزیک',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opposite': 'بەرامبەر',
+                'in front of': 'لەبەردەم',
+                'behind': 'لەدوای',
+                'above': 'سەروو',
+                'below': 'خواروو',
+                'over': 'سەروو',
+                'under': 'خواروو',
+                'on top of': 'لەسەری',
+                'at the bottom of': 'لەخوارەوەی',
+                'inside': 'ناوەوە',
+                'outside': 'دەرەوە',
+                'within': 'ناو',
+                'beyond': 'ئەویتر',
+                'among': 'ناو',
+                'between': 'نێوان',
+                'through': 'بەناو',
+                'across': 'بەناو',
+                'along': 'بەدرێژایی',
+                'around': 'دەوروبەری',
+                'against': 'بەرامبەر',
+                'toward': 'بەرەو',
+                'from': 'لە',
+                'to': 'بۆ',
+                'into': 'بۆ ناو',
+                'onto': 'بۆ سەر',
+                'upon': 'لەسەر',
+                'off': 'لەسەر نا',
+                'up': 'سەروو',
+                'down': 'خواروو',
+                'back': 'دواوە',
+                'forth': 'پێش و دوا',
+                'away': 'دوور',
+                'far': 'دوور',
+                'near': 'نزیک',
+                'close': 'نزik',
+                'by': 'لای',
+                'beside': 'لای',
+                'next to': 'لای',
+                'opp
